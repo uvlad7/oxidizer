@@ -4,6 +4,8 @@
 bundle gem oxidizer --ext=rust --mit --test=rspec --ci=github --linter=rubocop
 ```
 
+go to 'settings/pages' and set Source to Github Actions
+
 # Oxidizer
 
 TODO: Delete this and the text below, and describe your gem

@@ -1,0 +1,175 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: [ "v*.*.*" ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-data:
+    runs-on: ubuntu-latest
+    name: Fetch CI data
+    outputs:
+      result: ${{ steps.fetch.outputs.result }}
+      ruby_versions: ${{ steps.ruby_versions.outputs.result }}
+    steps:
+      - name: Fetch CI data
+        uses: oxidize-rb/actions/fetch-ci-data@v1
+        id: fetch
+        with:
+          supported-ruby-platforms: |
+            exclude: []
+          # stable-ruby-versions: |
+          #   exclude: [head]
+      - name: Fetch helper Ruby script
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            actions/ruby_versions.rb
+            xml2json.gemspec
+            lib/xml2json/version.rb
+          sparse-checkout-cone-mode: false
+      - name: Fetch supported Ruby versions
+        id: ruby_versions
+        shell: bash
+        run: |
+          : Run query
+          result="$(ruby "$GITHUB_WORKSPACE/actions/ruby_versions.rb" "$GITHUB_WORKSPACE/xml2json.gemspec")"
+          echo "result=$result" >> $GITHUB_OUTPUT
+
+  test:
+    runs-on: ${{ matrix.os }}
+    name: Test on ${{ matrix.os }} and Ruby ${{ matrix.ruby }}
+    needs: ci-data
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ "ubuntu-latest", "macos-latest", "windows-latest" ]
+        ruby: ${{ fromJSON(needs.ci-data.outputs.ruby_versions) }}
+        rust:
+          - "1.86.0"
+        include:
+          - os: windows-latest
+            ruby: mswin
+            rust: "1.86.0"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Remove Gemfile.lock
+        run: rm Gemfile.lock
+      - name: Set up Ruby & Rust
+        uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          rustup-toolchain: ${{ matrix.rust }}
+          bundler-cache: true
+          cargo-cache: true
+          rubygems: '3.6.9'
+      - name: Run the spec task
+        run: bundle exec rake compile && bundle exec rake spec
+
+  cross-gem:
+    name: Compile native gem for ${{ matrix.platform }}
+    runs-on: ubuntu-latest
+    needs: [ ci-data, test ]
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: ${{ fromJSON(needs.ci-data.outputs.result).supported-ruby-platforms }}
+        ruby:
+          - "3.3.6"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+          rubygems: "3.6.9"
+
+      - name: Cross-compile gem
+        uses: oxidize-rb/actions/cross-gem@v1
+        id: cross-gem
+        with:
+          platform: ${{ matrix.platform }}
+          ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.ruby_versions), ',') }}
+
+      - name: Test cross-compiled gem
+        uses: oxidize-rb/actions/test-gem-build@main
+        with:
+          platform: ${{ matrix.platform }}
+          ruby-versions: ${{ join(fromJSON(needs.ci-data.outputs.ruby_versions), ',') }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cross-gems-${{ strategy.job-index }}
+          path: ${{ steps.cross-gem.outputs.gem-path }}
+          if-no-files-found: error
+          retention-days: 1
+
+  release:
+    name: Release
+    strategy:
+      matrix:
+        ruby:
+          - '3.3.6'
+        rust:
+          - "1.86.0"
+    needs: cross-gem
+    runs-on: ubuntu-latest
+    if: "startsWith(github.ref, 'refs/tags/')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Ruby & Rust
+        uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          rustup-toolchain: ${{ matrix.rust }}
+          bundler-cache: true
+          cargo-cache: true
+          rubygems: '3.6.9'
+      - name: Ensure version matches the tag
+        run: |
+          bundle exec ruby "$GITHUB_WORKSPACE/actions/check_version.rb" "$GITHUB_REF_NAME" \
+          "$GITHUB_WORKSPACE/xml2json.gemspec" "$GITHUB_WORKSPACE/ext/xml2json/Cargo.toml"
+# FIXME: doesn't work with the latest version of the action
+      # - name: Download artifact
+      #   uses: actions/download-artifact@v4
+      #   with:
+      #     pattern: cross-gems-*
+      #     merge-multiple: true
+      # - name: Package source gem
+      #   run: bundle exec rake build
+
+      # - name: Push gem
+      #   working-directory: pkg/
+      #   env:
+      #     GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_KEY }}
+      #   run: |
+      #     mkdir -p $HOME/.gem
+      #     touch $HOME/.gem/credentials
+      #     chmod 0600 $HOME/.gem/credentials
+      #     printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
+      #     ls -l
+      #     for i in *.gem; do
+      #       if [ -f "$i" ]; then
+      #         gem push "$i"
+      #       fi
+      #     done
+
+      # - name: Create GitHub release
+      #   uses: ncipollo/release-action@v1
+      #   with:
+      #     allowUpdates: false
+      #     generateReleaseNotes: true
+      #     draft: false
+      #     skipIfReleaseExists: true

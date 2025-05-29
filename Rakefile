@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "bundler/setup"
+
 require "bundler/gem_tasks"
 require "rspec/core/rake_task"
 
@@ -12,11 +14,21 @@ RuboCop::RakeTask.new
 require "rb_sys/extensiontask"
 
 task build: :compile
+task spec: :compile
 
-GEMSPEC = Gem::Specification.load("oxidizer.gemspec")
+gemspec = Gem::Specification.load("oxidizer.gemspec")
 
-RbSys::ExtensionTask.new("oxidizer", GEMSPEC) do |ext|
+RbSys::ExtensionTask.new("oxidizer", gemspec) do |ext|
   ext.lib_dir = "lib/oxidizer"
+  ext.cross_compile = true
 end
 
-task default: %i[compile spec rubocop]
+task :clippy do
+  sh "cargo clippy -- -D warnings"
+end
+
+require "yard"
+
+YARD::Rake::YardocTask.new
+
+task default: %i[compile spec clippy rubocop yard]

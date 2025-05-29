@@ -1,11 +1,12 @@
-name: Ruby
+name: Tests
 
 on:
   push:
     branches:
-      - master
+      - main
 
   pull_request:
+    types: [ opened, reopened ]
 
 jobs:
   build:
@@ -15,13 +16,17 @@ jobs:
       matrix:
         ruby:
           - '3.3.6'
+        rust:
+          - "1.86.0"
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Set up Ruby & Rust
         uses: oxidize-rb/actions/setup-ruby-and-rust@v1
         with:
           ruby-version: ${{ matrix.ruby }}
+          rustup-toolchain: ${{ matrix.rust }}
           bundler-cache: true
           cargo-cache: true
           rubygems: '3.6.9'
