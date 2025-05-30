@@ -1,11 +1,11 @@
-/.bundle/
-/.yardoc
-/_yardoc/
-/coverage/
-/doc/
-/pkg/
-/spec/reports/
-/tmp/
+rb/.bundle/
+rb/.yardoc
+rb/_yardoc/
+rb/coverage/
+rb/doc/
+rb/pkg/
+rb/spec/reports/
+rb/tmp/
 *.bundle
 *.so
 *.o
@@ -22,11 +22,11 @@ target/
 
 *.gem
 *.rbc
-/.config
-/InstalledFiles
-/spec/examples.txt
-/test/tmp/
-/test/version_tmp/
+rb/.config
+rb/InstalledFiles
+rb/spec/examples.txt
+rb/test/tmp/
+rb/test/version_tmp/
 
 # Used by dotenv library to load environment variables.
 # .env
@@ -51,12 +51,12 @@ build-iPhoneSimulator/
 # vendor/Pods/
 
 ## Documentation cache and generated files:
-/.yardoc/
-/rdoc/
+rb/.yardoc/
+rb/rdoc/
 
 ## Environment normalization:
-/vendor/bundle
-/lib/bundler/man/
+rb/vendor/bundle
+rb/lib/bundler/man/
 
 # for a library or gem, you might want to ignore these files since the code is
 # intended to run in multiple environments; otherwise, check them in:
@@ -178,7 +178,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 .venv/
-.env/
 env/
 bin/
 build/

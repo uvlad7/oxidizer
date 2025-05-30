@@ -14,7 +14,7 @@ bundle gem oxidizer-rb --ext=rust --mit --test=rspec --ci=github --linter=ruboco
 go to 'settings/pages' and set Source to Github Actions
 
 ``bash
-python -m venv .env
+python -m venv env
 pip install maturin
 maturin init --name oxidizer-py --bindings pyo3
 ```
