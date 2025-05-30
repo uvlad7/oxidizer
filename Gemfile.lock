@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oxidizer (0.1.0)
+    oxidizer-rb (0.1.0)
       rb_sys (~> 0.9.91)
 
 GEM
@@ -99,7 +99,7 @@ PLATFORMS
 DEPENDENCIES
   base64
   irb
-  oxidizer!
+  oxidizer-rb!
   pry
   pry-byebug
   rake (~> 13.0)

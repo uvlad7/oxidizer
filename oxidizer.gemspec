@@ -3,7 +3,7 @@
 require_relative "lib/oxidizer/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "oxidizer"
+  spec.name = "oxidizer-rb"
   spec.version = Oxidizer::VERSION
   spec.authors = ["uvlad7"]
   spec.email = ["uvlad7@gmail.com"]

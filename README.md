@@ -1,9 +1,9 @@
-[![Gem Version](https://badge.fury.io/rb/oxidizer.svg)](https://badge.fury.io/rb/oxidizer)
-![Gem](https://img.shields.io/gem/dt/oxidizer?style=plastic)
-![Gem](https://img.shields.io/gem/dtv/oxidizer?style=plastic)
-[![Tests](https://github.com/uvlad7/oxidizer/actions/workflows/main.yml/badge.svg)](https://github.com/uvlad7/oxidizer/actions/workflows/main.yml)
-[![Docs](https://github.com/uvlad7/oxidizer/actions/workflows/docs.yml/badge.svg)](https://github.com/uvlad7/oxidizer/actions/workflows/docs.yml)
-[![Release](https://github.com/uvlad7/oxidizer/actions/workflows/release.yml/badge.svg)](https://github.com/uvlad7/oxidizer/actions/workflows/release.yml)
+[![Gem Version](https://badge.fury.io/rb/oxidizer-rb.svg)](https://badge.fury.io/rb/oxidizer-rb)
+![Gem](https://img.shields.io/gem/dt/oxidizer-rb?style=plastic)
+![Gem](https://img.shields.io/gem/dtv/oxidizer-rb?style=plastic)
+[![Tests](https://github.com/uvlad7/oxidizer-rb/actions/workflows/main.yml/badge.svg)](https://github.com/uvlad7/oxidizer-rb/actions/workflows/main.yml)
+[![Docs](https://github.com/uvlad7/oxidizer-rb/actions/workflows/docs.yml/badge.svg)](https://github.com/uvlad7/oxidizer-rb/actions/workflows/docs.yml)
+[![Release](https://github.com/uvlad7/oxidizer-rb/actions/workflows/release.yml/badge.svg)](https://github.com/uvlad7/oxidizer-rb/actions/workflows/release.yml)
 
 # Creation notes
 
