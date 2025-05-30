@@ -1,5 +1,9 @@
 #[cfg(feature = "ext-magnus")]
 use magnus::{function, prelude::*, Error, Ruby};
+#[cfg(feature = "ext-magnus")]
+use magnus::init as oxy_init;
+#[cfg(feature = "ext-pyo3")]
+use oxidizer_macros::init_pyo3 as oxy_init;
 
 #[cfg(feature = "ext-magnus")]
 fn hello(subject: String) -> String {
@@ -7,7 +11,7 @@ fn hello(subject: String) -> String {
 }
 
 #[cfg(feature = "ext-magnus")]
-#[magnus::init]
+#[oxy_init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let module = ruby.define_module("Oxidizer")?;
     module.define_singleton_method("hello", function!(hello, 1))?;
@@ -26,8 +30,8 @@ fn sum_as_string(a: usize, b: usize) -> PyResult<String> {
 
 /// A Python module implemented in Rust.
 #[cfg(feature = "ext-pyo3")]
-#[pymodule]
-fn oxidizer(m: &Bound<'_, PyModule>) -> PyResult<()> {
+#[oxy_init]
+fn init(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(sum_as_string, m)?)?;
     Ok(())
 }

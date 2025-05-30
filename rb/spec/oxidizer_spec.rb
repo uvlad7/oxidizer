@@ -6,6 +6,6 @@ RSpec.describe Oxidizer do
   end
 
   it "does something useful" do
-    expect(true).to eq(true)
+    expect(described_class.hello("World")).to eq("Hello from Rust, World!")
   end
 end

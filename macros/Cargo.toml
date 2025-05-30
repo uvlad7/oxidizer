@@ -1,0 +1,17 @@
+[package]
+name = "oxidizer-macros"
+version = "0.1.0"
+edition = "2021"
+authors = ["uvlad7 <uvlad7@gmail.com>"]
+description = "Derive and proc macros for oxidizer"
+repository = "https://github.com/uvlad7/oxidizer"
+homepage = "https://github.com/uvlad7/oxidizer"
+license = "MIT"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1"
+quote = "1"
+syn = { version = "2", features = ["full"] }
