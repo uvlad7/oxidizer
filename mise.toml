@@ -1,3 +1,4 @@
 [tools]
+python = {version="3.12.2", virtualenv=".env"}
 ruby = "3.3.6"
 rust = "1.86.0"

@@ -8,10 +8,16 @@
 # Creation notes
 
 ```bash
-bundle gem oxidizer --ext=rust --mit --test=rspec --ci=github --linter=rubocop
+bundle gem oxidizer-rb --ext=rust --mit --test=rspec --ci=github --linter=rubocop
 ```
 
 go to 'settings/pages' and set Source to Github Actions
+
+``bash
+python -m venv .env
+pip install maturin
+maturin init --name oxidizer-py --bindings pyo3
+```
 
 # Oxidizer
 
