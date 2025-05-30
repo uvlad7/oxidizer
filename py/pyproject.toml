@@ -12,4 +12,11 @@ classifiers = [
 ]
 dynamic = ["version"]
 [tool.maturin]
-features = ["pyo3/extension-module"]
+features = ["pyo3/extension-module", "ext-pyo3"]
+module-name = 'oxidizer'
+
+# pip install -e '.[dev]'
+[project.optional-dependencies]
+dev = [
+    "ipython",
+]

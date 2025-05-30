@@ -1,16 +1,1 @@
-[package]
-name = "oxidizer"
-version = "0.1.0"
-edition = "2021"
-authors = ["uvlad7 <uvlad7@gmail.com>"]
-license = "MIT"
-publish = false
-
-[lib]
-crate-type = ["cdylib"]
-
-[dependencies]
-magnus = { version = "0.6.2", optional = true }
-
-[features]
-magnus = ["dep:magnus"]
+../../../Cargo.toml
