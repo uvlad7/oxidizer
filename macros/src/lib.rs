@@ -1,7 +1,7 @@
 mod init {
     use proc_macro2::{Ident, Span, TokenStream};
     use quote::quote;
-    use syn::{Error, ItemFn};
+    use syn::{Error, FnArg, ItemFn, Pat, PatType};
     pub fn expand(name: Option<String>, input: ItemFn) -> Result<TokenStream, Error> {
         let crate_name = match name {
             Some(v) => v,
@@ -18,13 +18,28 @@ mod init {
 
         let extern_init_name = Ident::new(&crate_name, Span::call_site());
         let init_name = input.sig.ident.clone();
+        let init_params = &input.sig.inputs;
+        let init_args = init_params
+            .iter()
+            .map(|fn_arg| match fn_arg {
+                FnArg::Typed(PatType { pat, .. }) => match &**pat {
+                    Pat::Ident(ident) => Ok(ident),
+                    _ => Err(Error::new(
+                        Span::call_site(),
+                        "argument pattern is not a simple ident",
+                    )),
+                },
+                FnArg::Receiver(_) => Err(Error::new(Span::call_site(), "argument is a receiver")),
+            })
+            .collect::<Result<Vec<_>, Error>>()?;
+        let init_ret = &input.sig.output;
 
         Ok(quote! {
             #input
 
             #[pymodule]
-            fn #extern_init_name(m: &Bound<'_, PyModule>) -> PyResult<()> {
-                #init_name(m)
+            fn #extern_init_name(#init_params) #init_ret {
+                #init_name(#(#init_args)*)
             }
         })
     }
@@ -47,9 +62,12 @@ pub fn init_pyo3(attrs: TokenStream, item: TokenStream) -> TokenStream {
         });
         parse_macro_input!(attrs with attr_parser);
     }
-    match init::expand(name, parse_macro_input!(item)) {
-        Ok(tokens) => tokens,
-        Err(e) => e.into_compile_error(),
-    }
-    .into()
+    init::expand(name, parse_macro_input!(item))
+        .unwrap_or_else(|e| e.into_compile_error())
+        .into()
+}
+
+#[proc_macro_attribute]
+pub fn init_magnus(attrs: TokenStream, item: TokenStream) -> TokenStream {
+    unimplemented!()
 }

@@ -24,7 +24,7 @@ RbSys::ExtensionTask.new("oxidizer", gemspec) do |ext|
 end
 
 task :clippy do
-  sh "cargo clippy -- -D warnings"
+  sh "cargo clippy --features ext-magnus -- -D warnings"
 end
 
 require "yard"
