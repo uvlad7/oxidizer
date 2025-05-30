@@ -16,7 +16,7 @@ mod magnus_oxide {
 
     pub type OxyResult<T> = Result<T, Error>;
 
-    pub use magnus::init as oxy_init;
+    pub use oxidizer_macros::init_magnus as oxy_init;
 }
 
 #[cfg(feature = "ext-pyo3")]

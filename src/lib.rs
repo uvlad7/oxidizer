@@ -1,7 +1,7 @@
 mod oxide;
 
 #[cfg(feature = "ext-magnus")]
-use magnus::{function, prelude::*, Ruby};
+use magnus::{function, prelude::*};
 use oxide::{oxy_init, OxyModule, OxyResult};
 
 #[cfg(feature = "ext-magnus")]
@@ -11,8 +11,7 @@ fn hello(subject: String) -> String {
 
 #[cfg(feature = "ext-magnus")]
 #[oxy_init]
-fn init(ruby: &Ruby) -> OxyResult<()> {
-    let module: OxyModule = ruby.define_module("Oxidizer")?;
+fn init(module: &OxyModule<'_>) -> OxyResult<()> {
     module.define_singleton_method("hello", function!(hello, 1))?;
     Ok(())
 }
