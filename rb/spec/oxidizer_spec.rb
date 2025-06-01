@@ -13,4 +13,11 @@ RSpec.describe Oxidizer do
     expect(described_class.odd(1)).to eq(true)
     expect { described_class.odd(42) }.to raise_error(RuntimeError, "42 is even")
   end
+
+  it "creates submodules" do
+    expect(described_class::SnakeCase).to be_a(Module)
+    expect(described_class::SnakeCase.repr(described_class::SnakeCase)).to eq('Oxidizer::SnakeCase')
+    expect(described_class::CamelCase).to be_a(Module)
+    expect(described_class::SnakeCase.repr(described_class::CamelCase)).to eq('Oxidizer::CamelCase')
+  end
 end

@@ -1,5 +1,6 @@
 #[cfg(feature = "ext-pyo3")]
 mod pyo3_oxide {
+    use paste::paste;
     use pyo3::prelude::PyModule;
     use pyo3::{Bound, PyResult};
     pub type OxyModule<'a> = Bound<'a, PyModule>;
@@ -30,6 +31,19 @@ mod pyo3_oxide {
         }}
     }
     pub use oxy_pyexception as oxy_exception;
+
+    #[macro_export]
+    macro_rules! oxy_pysubmodule {
+        ($module:ident, $name:literal) => {{
+            paste::paste! {
+                let submodule = pyo3::prelude::PyModule::new($module.py(), stringify!([<$name:snake>]))?;
+                $module.add_submodule(&submodule)?;
+                submodule
+            }
+        }}
+    }
+
+    pub use oxy_pysubmodule as oxy_submodule;
 }
 
 #[cfg(feature = "ext-magnus")]
@@ -72,7 +86,7 @@ mod magnus_oxide {
             use $function as wrapped_rbfunction;
             (wrapped_rbfunction::_OXY_NAME, wrapped_rbfunction::_OXY_WRAP)
         }};
-        ($function:path, $ignored_module:expr) => {{ 
+        ($function:path, $ignored_module:expr) => {{
             use $function as wrapped_rbfunction;
             (wrapped_rbfunction::_OXY_NAME, wrapped_rbfunction::_OXY_WRAP)
         }};
@@ -89,6 +103,18 @@ mod magnus_oxide {
         }}
     }
     pub use oxy_rbexception as oxy_exception;
+
+    #[macro_export]
+    macro_rules! oxy_rbsubmodule {
+        ($module:ident, $name:literal) => {{
+            paste::paste! {
+                use magnus::Module;
+                oxide::OxyModule::from($module.define_module(stringify!([<$name:camel>]))?)
+            }
+        }}
+    }
+
+    pub use oxy_rbsubmodule as oxy_submodule;
 }
 
 #[cfg(feature = "ext-pyo3")]

@@ -132,7 +132,7 @@ mod function {
             #input
 
             #hash[doc(hidden)]
-            mod #fn_name {
+            pub mod #fn_name {
                 pub const _OXY_NAME: &str = #oxy_name;
                 pub const _OXY_WRAP: unsafe extern "C" fn(#oxy_args magnus::Value) -> magnus::Value = { magnus::function!(super::#fn_name, #oxy_arity) };
             }
