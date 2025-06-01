@@ -116,8 +116,8 @@ pub fn init_magnus(attrs: TokenStream, item: TokenStream) -> TokenStream {
 mod function {
     use proc_macro2::{Ident, Span, TokenStream};
     use quote::quote;
-    use syn::{Error, ItemFn};
     use std::str::FromStr;
+    use syn::{Error, ItemFn};
 
     pub fn build_rb_function(name: Option<String>, input: ItemFn) -> Result<TokenStream, Error> {
         let fn_name = input.sig.ident.clone();
@@ -128,7 +128,7 @@ mod function {
             None => fn_name.to_string(),
         };
         let oxy_arity = TokenStream::from_str(&input.sig.inputs.len().to_string())?;
-        let oxy_args =  TokenStream::from_str(&"magnus::Value, ".repeat(input.sig.inputs.len()))?;
+        let oxy_args = TokenStream::from_str(&"magnus::Value, ".repeat(input.sig.inputs.len()))?;
         let hash = quote!(#);
         Ok(quote! {
             #input
@@ -137,6 +137,28 @@ mod function {
             const #const_name: &str = #oxy_name;
             #hash[doc(hidden)]
             const #const_wrap: unsafe extern "C" fn(#oxy_args magnus::Value) -> magnus::Value = magnus::function!(#fn_name, #oxy_arity);
+        })
+    }
+
+    pub fn build_py_function(
+        name_opt: Option<String>,
+        input: ItemFn,
+    ) -> Result<TokenStream, Error> {
+        let hash = quote!(#);
+        let pyo3_annotation = match name_opt {
+            Some(name) => {
+                quote! {
+                    #hash[pyo3(name = #name)]
+                }
+            }
+            None => {
+                quote! {}
+            }
+        };
+        Ok(quote! {
+            #hash[pyo3::prelude::pyfunction]
+            #pyo3_annotation
+            #input
         })
     }
 }
@@ -157,6 +179,26 @@ pub fn rbfunction(attrs: TokenStream, input: TokenStream) -> TokenStream {
     }
 
     function::build_rb_function(name, parse_macro_input!(input))
+        .unwrap_or_else(|e| e.into_compile_error())
+        .into()
+}
+
+#[proc_macro_attribute]
+pub fn pyfunction(attrs: TokenStream, input: TokenStream) -> TokenStream {
+    let mut name = None;
+    if !attrs.is_empty() {
+        let attr_parser = syn::meta::parser(|meta| {
+            if meta.path.is_ident("name") {
+                name = Some(meta.value()?.parse::<syn::LitStr>()?.value());
+                Ok(())
+            } else {
+                Err(meta.error("unsupported attribute"))
+            }
+        });
+        parse_macro_input!(attrs with attr_parser);
+    }
+
+    function::build_py_function(name, parse_macro_input!(input))
         .unwrap_or_else(|e| e.into_compile_error())
         .into()
 }

@@ -7,10 +7,10 @@ mod pyo3_oxide {
 
     pub use oxidizer_macros::init_pyo3 as oxy_init;
 
-    pub use pyo3::prelude::pyfunction as oxy_function;
+    pub use oxidizer_macros::pyfunction as oxy_function;
 
     #[macro_export]
-    macro_rules! wrap_pyfunction {
+    macro_rules! wrap_oxy_pyfunction {
         ($function:path) => {{
             pyo3::prelude::wrap_pyfunction!($function)?
         }};
@@ -18,7 +18,18 @@ mod pyo3_oxide {
             pyo3::prelude::wrap_pyfunction!($function, $module)?
         }};
     }
-    pub use wrap_pyfunction as wrap_oxyfunction;
+    pub use wrap_oxy_pyfunction as wrap_oxyfunction;
+
+    // TODO: Create mappings for types, not just `paste`
+    #[macro_export]
+    macro_rules! oxy_pyexception {
+        ($exception:expr, $message:expr) => {{
+            paste::paste! {
+                pyo3::exceptions::[<Py $exception>]::new_err($message)
+            }
+        }}
+    }
+    pub use oxy_pyexception as oxy_exception;
 }
 
 #[cfg(feature = "ext-magnus")]
@@ -69,6 +80,17 @@ mod magnus_oxide {
         }};
     }
     pub use wrap_rbfunction as wrap_oxyfunction;
+
+    // TODO: Create mappings for functions, not just `paste` with case convention
+    #[macro_export]
+    macro_rules! oxy_rbexception {
+        ($exception:expr, $message:expr) => {{
+            paste::paste! {
+               magnus::Error::new(magnus::exception::[<$exception:snake>](), $message)
+            }
+        }}
+    }
+    pub use oxy_rbexception as oxy_exception;
 }
 
 #[cfg(feature = "ext-pyo3")]

@@ -18,5 +18,8 @@ module-name = 'oxidizer'
 # pip install -e '.[dev]'
 [project.optional-dependencies]
 dev = [
-    "ipython",
+    "ipython", "pytest",
 ]
+
+[tool.pytest.ini_options]
+testpaths = "tests"
