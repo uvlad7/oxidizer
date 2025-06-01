@@ -56,7 +56,7 @@ fn init(module: &OxyModule<'_>) -> OxyResult<()> {
     module.add_function(wrap_oxyfunction!(hello, module))?;
     module.add_function(wrap_oxyfunction!(sum_as_string, module))?;
     module.add_function(wrap_oxyfunction!(odd_is_odd, module))?;
-    let submodule = oxy_submodule!(module, "SnakeCase");
+    let submodule = oxy_submodule!(module, "snake_case");
     submodule.add_function(wrap_oxyfunction!(direct_access::inspect, module))?;
     let _ = oxy_submodule!(module, "CamelCase");
     Ok(())

@@ -15,5 +15,5 @@ def test_it_works_with_exceptions():
 def test_it_creates_submodules():
     assert isinstance(oxidizer.snake_case, ModuleType)
     assert oxidizer.snake_case.inspect(oxidizer.snake_case) == "<module 'snake_case'>"
-    assert isinstance(oxidizer.camel_case, ModuleType)
-    assert oxidizer.snake_case.inspect(oxidizer.camel_case) == "<module 'camel_case'>"
+    assert isinstance(oxidizer.CamelCase, ModuleType)
+    assert oxidizer.snake_case.inspect(oxidizer.CamelCase) == "<module 'CamelCase'>"

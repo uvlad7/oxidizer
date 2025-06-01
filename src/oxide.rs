@@ -36,7 +36,7 @@ mod pyo3_oxide {
     macro_rules! oxy_pysubmodule {
         ($module:ident, $name:literal) => {{
             paste::paste! {
-                let submodule = pyo3::prelude::PyModule::new($module.py(), stringify!([<$name:snake>]))?;
+                let submodule = pyo3::prelude::PyModule::new($module.py(), stringify!([<$name>]))?;
                 $module.add_submodule(&submodule)?;
                 submodule
             }
