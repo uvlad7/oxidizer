@@ -1,37 +1,25 @@
 mod oxide;
-
-#[cfg(feature = "ext-magnus")]
-use magnus::{function, prelude::*};
+use oxide::{wrap_oxyfunction, oxy_function};
 use oxide::{oxy_init, OxyModule, OxyResult};
 
-#[cfg(feature = "ext-magnus")]
+/// Say hello
+#[oxy_function]
 fn hello(subject: String) -> String {
     format!("Hello from Rust, {subject}!")
 }
 
-#[cfg(feature = "ext-magnus")]
-#[oxy_init]
-fn init(module: &OxyModule<'_>) -> OxyResult<()> {
-    module.define_singleton_method("hello", function!(hello, 1))?;
-    Ok(())
-}
-
-#[cfg(feature = "ext-pyo3")]
-use pyo3::prelude::*;
-
 /// Formats the sum of two numbers as string.
-#[cfg(feature = "ext-pyo3")]
-#[pyfunction]
+#[oxy_function]
 fn sum_as_string(a: usize, b: usize) -> OxyResult<String> {
     Ok((a + b).to_string())
 }
 
-/// A Python module implemented in Rust.
-#[cfg(feature = "ext-pyo3")]
+/// A module implemented in Rust.
 #[oxy_init]
 fn init(module: &OxyModule<'_>) -> OxyResult<()> {
+    module.add_function(wrap_oxyfunction!(hello, module))?;
+    module.add_function(wrap_oxyfunction!(sum_as_string, module))?;
     // let sub = PyModule::new(m.py(), "oxy")?;
     // m.add_submodule(&sub)?;
-    module.add_function(wrap_pyfunction!(sum_as_string, module)?)?;
     Ok(())
 }
