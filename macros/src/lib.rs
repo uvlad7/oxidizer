@@ -114,15 +114,13 @@ pub fn init_magnus(attrs: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 mod function {
-    use proc_macro2::{Ident, Span, TokenStream};
+    use proc_macro2::TokenStream;
     use quote::quote;
     use std::str::FromStr;
     use syn::{Error, ItemFn};
 
     pub fn build_rb_function(name: Option<String>, input: ItemFn) -> Result<TokenStream, Error> {
         let fn_name = input.sig.ident.clone();
-        let const_name = Ident::new(&format!("_OXY_NAME_{}", fn_name), Span::call_site());
-        let const_wrap = Ident::new(&format!("_OXY_WRAP_{}", fn_name), Span::call_site());
         let oxy_name = match name {
             Some(v) => v,
             None => fn_name.to_string(),
@@ -134,9 +132,10 @@ mod function {
             #input
 
             #hash[doc(hidden)]
-            const #const_name: &str = #oxy_name;
-            #hash[doc(hidden)]
-            const #const_wrap: unsafe extern "C" fn(#oxy_args magnus::Value) -> magnus::Value = magnus::function!(#fn_name, #oxy_arity);
+            mod #fn_name {
+                pub const _OXY_NAME: &str = #oxy_name;
+                pub const _OXY_WRAP: unsafe extern "C" fn(#oxy_args magnus::Value) -> magnus::Value = { magnus::function!(super::#fn_name, #oxy_arity) };
+            }
         })
     }
 

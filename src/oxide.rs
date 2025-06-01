@@ -69,14 +69,12 @@ mod magnus_oxide {
     #[macro_export]
     macro_rules! wrap_rbfunction {
         ($function:path) => {{
-            paste::paste! {
-                ([<_OXY_NAME_ $function>], [<_OXY_WRAP_ $function>])
-            }
+            use $function as wrapped_rbfunction;
+            (wrapped_rbfunction::_OXY_NAME, wrapped_rbfunction::_OXY_WRAP)
         }};
-        ($function:path, $ignored_module:expr) => {{
-            paste::paste! {
-                ([<_OXY_NAME_ $function>], [<_OXY_WRAP_ $function>])
-            }
+        ($function:path, $ignored_module:expr) => {{ 
+            use $function as wrapped_rbfunction;
+            (wrapped_rbfunction::_OXY_NAME, wrapped_rbfunction::_OXY_WRAP)
         }};
     }
     pub use wrap_rbfunction as wrap_oxyfunction;
