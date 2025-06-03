@@ -11,6 +11,27 @@ python -m venv env
 pip install maturin
 maturin init --name oxidizer-py --bindings pyo3
 ```
+
+Mise is used to manage tool versions. If you don’t have it installed,
+you can manually install the tools specified in these files: 
+- [`mise.toml`](./mise.toml)
+- [`rb/mise.toml`](./rb/mise.toml)
+- [`./py/mise.toml`](./py/mise.toml)
+
+##### Ruby Gem
+To test the Ruby gem, navigate to the `rb` directory and run:
+```shell
+bin/setup
+bin/console
+```
+
+##### Python Library
+For the Python library, go to the `py` directory and execute:
+```shell
+pip install -e '.[dev]'
+ipython
+```
+
 The rest of the ReadMe is a template.
 
 [![Gem Version](https://badge.fury.io/rb/oxidizer-rb.svg)](https://badge.fury.io/rb/oxidizer-rb)
