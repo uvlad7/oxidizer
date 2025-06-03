@@ -16,7 +16,7 @@ Mise is used to manage tool versions. If you don’t have it installed,
 you can manually install the tools specified in these files: 
 - [`mise.toml`](./mise.toml)
 - [`rb/mise.toml`](./rb/mise.toml)
-- [`./py/mise.toml`](./py/mise.toml)
+- [`py/mise.toml`](./py/mise.toml)
 
 ##### Ruby Gem
 To test the Ruby gem, navigate to the `rb` directory and run:
