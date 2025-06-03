@@ -1,6 +1,5 @@
 #[cfg(feature = "ext-pyo3")]
 mod pyo3_oxide {
-    use paste::paste;
     use pyo3::prelude::PyModule;
     use pyo3::{Bound, PyResult};
     pub type OxyModule<'a> = Bound<'a, PyModule>;
