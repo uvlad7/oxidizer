@@ -23,3 +23,7 @@ ext-pyo3 = ["dep:pyo3"]
 
 [workspace]
 members = ["macros"]
+
+# Just to keep tzfpy's code as close to the source as possible
+[lints.clippy]
+needless_return = "allow"

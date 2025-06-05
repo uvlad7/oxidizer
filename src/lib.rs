@@ -21,15 +21,9 @@ pub fn get_tzs(_py: Python, lng: f64, lat: f64) -> OxyResult<Vec<&str>> {
     Ok(FINDER.get_tz_names(lng, lat))
 }
 
-// #[oxy_function]
-// pub fn timezonenames(_py: Python) -> OxyResult<Vec<&str>> {
-//     return Ok(FINDER.timezonenames());
-// }
-
-// Test raw values are supported as well
 #[oxy_function]
-pub fn timezonenames(_py: Python) -> Vec<&str> {
-    FINDER.timezonenames()
+pub fn timezonenames(_py: Python) -> OxyResult<Vec<&str>> {
+    return Ok(FINDER.timezonenames());
 }
 
 #[oxy_function]

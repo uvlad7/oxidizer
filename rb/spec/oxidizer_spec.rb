@@ -5,19 +5,15 @@ RSpec.describe Oxidizer do
     expect(Oxidizer::VERSION).not_to be nil
   end
 
-  it "says hello" do
-    expect(described_class.hello("Ruby")).to eq("Hello from Rust, Ruby!")
+  it "gets tz" do
+    expect(described_class.get_tz(139.7744, 35.6812)).to eq("Asia/Tokyo")
   end
 
-  it "works with exceptions" do
-    expect(described_class.odd(1)).to eq(true)
-    expect { described_class.odd(42) }.to raise_error(RuntimeError, "42 is even")
+  it "gets tzs" do
+    expect(described_class.get_tzs(116.3883, 39.9289)).to eq(["Asia/Shanghai"])
   end
 
-  it "creates submodules" do
-    expect(described_class::SnakeCase).to be_a(Module)
-    expect(described_class::SnakeCase.repr(described_class::SnakeCase)).to eq('Oxidizer::SnakeCase')
-    expect(described_class::CamelCase).to be_a(Module)
-    expect(described_class::SnakeCase.repr(described_class::CamelCase)).to eq('Oxidizer::CamelCase')
+  it "has a data version" do
+    expect(described_class.data_version).to eq("2025b")
   end
 end

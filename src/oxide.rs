@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 #[cfg(feature = "ext-pyo3")]
 mod pyo3_oxide {
     use pyo3::prelude::PyModule;
@@ -64,7 +66,7 @@ mod magnus_oxide {
         }
     }
 
-    impl<'a> From<RModule> for OxyModule<'a> {
+    impl From<RModule> for OxyModule<'_> {
         fn from(value: RModule) -> Self {
             OxyModule(value, PhantomData)
         }
