@@ -32,6 +32,63 @@ pip install -e '.[dev]'
 ipython
 ```
 
+### Example of `tzfpy` migration
+
+```diff
+-use pyo3::prelude::*;
++use oxide::{oxy_function, wrap_oxyfunction};
++use oxide::{oxy_init, OxyModule, OxyResult, Python};
+ use lazy_static::lazy_static;
+ use tzf_rs::DefaultFinder;
+ 
+@@ -6,31 +7,31 @@ lazy_static! {
+     static ref FINDER: DefaultFinder = DefaultFinder::default();
+ }
+ 
+-#[pyfunction]
+-pub fn get_tz(lng: f64, lat: f64) -> PyResult<String> {
++#[oxy_function]
++pub fn get_tz(lng: f64, lat: f64) -> OxyResult<String> {
+     Ok(FINDER.get_tz_name(lng, lat).to_string())
+ }
+ 
+-#[pyfunction]
+-pub fn get_tzs(_py: Python, lng: f64, lat: f64) -> PyResult<Vec<&str>> {
++#[oxy_function]
++pub fn get_tzs(_py: Python, lng: f64, lat: f64) -> OxyResult<Vec<&str>> {
+     Ok(FINDER.get_tz_names(lng, lat))
+ }
+ 
+-#[pyfunction]
+-pub fn timezonenames(_py: Python) -> PyResult<Vec<&str>> {
++#[oxy_function]
++pub fn timezonenames(_py: Python) -> OxyResult<Vec<&str>> {
+     return Ok(FINDER.timezonenames());
+ }
+ 
+-#[pyfunction]
+-pub fn data_version(_py: Python) -> PyResult<String> {
++#[oxy_function]
++pub fn data_version(_py: Python) -> OxyResult<String> {
+     return Ok(FINDER.data_version().to_string());
+ }
+ 
+-#[pymodule]
+-fn tzfpy(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
+-    m.add_function(wrap_pyfunction!(get_tz, m)?)?;
+-    m.add_function(wrap_pyfunction!(get_tzs, m)?)?;
+-    m.add_function(wrap_pyfunction!(timezonenames, m)?)?;
+-    m.add_function(wrap_pyfunction!(data_version, m)?)?;
++#[oxy_init]
++fn tzfpy(m: &OxyModule) -> OxyResult<()> {
++    m.add_function(wrap_oxyfunction!(get_tz, m)?)?;
++    m.add_function(wrap_oxyfunction!(get_tzs, m)?)?;
++    m.add_function(wrap_oxyfunction!(timezonenames, m)?)?;
++    m.add_function(wrap_oxyfunction!(data_version, m)?)?;
+     Ok(())
+ }
+```
+
 The rest of the ReadMe is a template.
 
 [![Gem Version](https://badge.fury.io/rb/oxidizer-rb.svg)](https://badge.fury.io/rb/oxidizer-rb)
