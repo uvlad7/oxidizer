@@ -114,25 +114,89 @@ pub fn init_magnus(attrs: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 mod function {
-    use proc_macro2::TokenStream;
+    use proc_macro2::{Span, TokenStream};
     use quote::quote;
     use std::str::FromStr;
-    use syn::{Error, ItemFn};
+    use syn::punctuated::Punctuated;
+    use syn::token::Comma;
+    use syn::{Error, FnArg, ItemFn, Pat, PatType};
 
     pub fn build_rb_function(name: Option<String>, input: ItemFn) -> Result<TokenStream, Error> {
-        let fn_name = input.sig.ident.clone();
+        let mut fn_name = input.sig.ident.clone();
         let oxy_name = match name {
             Some(v) => v,
             None => fn_name.to_string(),
         };
-        let oxy_arity = TokenStream::from_str(&input.sig.inputs.len().to_string())?;
-        let oxy_args = TokenStream::from_str(&"magnus::Value, ".repeat(input.sig.inputs.len()))?;
+        let inputs = &input.sig.inputs.clone();
+        let arg_types = inputs
+            .iter()
+            .map(|arg| match arg {
+                FnArg::Typed(arg) => Ok(&arg.ty),
+                FnArg::Receiver(_) => Err(Error::new(Span::call_site(), "argument is a receiver")),
+            })
+            .collect::<Result<Vec<_>, Error>>()?;
+        // just like is_python works
+        let py_index = arg_types.iter().position(|arg| {
+            let mut ty: &syn::Type = arg;
+            while let syn::Type::Group(g) = ty {
+                ty = &*g.elem;
+            }
+            match ty {
+                syn::Type::Path(ty_path) => ty_path
+                    .path
+                    .segments
+                    .last()
+                    .map(|seg| seg.ident == "Python")
+                    .unwrap_or(false),
+                _ => false,
+            }
+        });
+        let mut args_len = arg_types.len();
+        let mut oxy_wrap = TokenStream::from_str("")?;
         let hash = quote!(#);
+        let orig_fn_name = fn_name.clone();
+        if let Some(py_index_val) = py_index {
+            args_len -= 1;
+            let ret_type = input.sig.output.clone();
+            fn_name = proc_macro2::Ident::new(&format!("{}_oxy_wrap", &fn_name), Span::call_site());
+            let wrap_args: Punctuated<FnArg, Comma> = Punctuated::from_iter(
+                inputs
+                    .clone()
+                    .into_iter()
+                    .enumerate()
+                    .filter_map(|(i, arg)| if i == py_index_val { None } else { Some(arg) }),
+            );
+            let wrap_arg_names = wrap_args
+                .iter()
+                .map(|fn_arg| match fn_arg {
+                    FnArg::Typed(PatType { pat, .. }) => match &**pat {
+                        Pat::Ident(ident) => Ok(ident),
+                        _ => Err(Error::new(
+                            Span::call_site(),
+                            "argument pattern is not a simple ident",
+                        )),
+                    },
+                    FnArg::Receiver(_) => Err(Error::new(Span::call_site(), "argument is a receiver")),
+                })
+                .collect::<Result<Vec<_>, Error>>()?;
+
+            // FIXME: Need to convert here, or call_convert_value trait bounds aren't satisfied
+            // TODO: Find how pyo3 does this
+            oxy_wrap = quote! {
+                #hash[doc(hidden)]
+                fn #fn_name(ruby: &magnus::Ruby, #wrap_args) -> OxyResult<magnus::Value> {
+                    #orig_fn_name(ruby.into(), #(#wrap_arg_names),*).map(|v| magnus::IntoValue::into_value_with(v, ruby))
+                }
+            };
+        }
+        let oxy_arity = TokenStream::from_str(&args_len.to_string())?;
+        let oxy_args = TokenStream::from_str(&"magnus::Value, ".repeat(args_len))?;
         Ok(quote! {
             #input
+            #oxy_wrap
 
             #hash[doc(hidden)]
-            pub mod #fn_name {
+            pub mod #orig_fn_name {
                 pub const _OXY_WRAP: Result<(&str, unsafe extern "C" fn(#oxy_args magnus::Value) -> magnus::Value), magnus::Error> = Ok((#oxy_name, { magnus::function!(super::#fn_name, #oxy_arity) }));
             }
         })

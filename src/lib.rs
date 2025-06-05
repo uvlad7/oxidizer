@@ -1,7 +1,7 @@
 mod oxide;
 
 use oxide::{oxy_function, wrap_oxyfunction};
-use oxide::{oxy_init, OxyModule, OxyResult};
+use oxide::{oxy_init, OxyModule, OxyResult, Python};
 
 // #![allow(unused)]
 use lazy_static::lazy_static;
@@ -17,17 +17,17 @@ pub fn get_tz(lng: f64, lat: f64) -> OxyResult<String> {
 }
 
 #[oxy_function]
-pub fn get_tzs(lng: f64, lat: f64) -> OxyResult<Vec<String>> {
-    Ok(FINDER.get_tz_names(lng, lat).into_iter().map(|v| v.to_string()).collect())
+pub fn get_tzs(_py: Python, lng: f64, lat: f64) -> OxyResult<Vec<&str>> {
+    Ok(FINDER.get_tz_names(lng, lat))
 }
 
 #[oxy_function]
-pub fn timezonenames() -> OxyResult<Vec<String>> {
-    return Ok(FINDER.timezonenames().into_iter().map(|v| v.to_string()).collect());
+pub fn timezonenames(_py: Python) -> OxyResult<Vec<&str>> {
+    return Ok(FINDER.timezonenames());
 }
 
 #[oxy_function]
-pub fn data_version() -> OxyResult<String> {
+pub fn data_version(_py: Python) -> OxyResult<String> {
     return Ok(FINDER.data_version().to_string());
 }
 

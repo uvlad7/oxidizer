@@ -3,6 +3,8 @@ mod pyo3_oxide {
     use pyo3::prelude::PyModule;
     use pyo3::{Bound, PyResult};
     pub type OxyModule<'a> = Bound<'a, PyModule>;
+    // Unfortunately, it must be named like this for pyo3's #pyfunction macro to work
+    pub use pyo3::Python;
     pub type OxyResult<T> = PyResult<T>;
 
     pub use oxidizer_macros::init_pyo3 as oxy_init;
@@ -27,7 +29,7 @@ mod pyo3_oxide {
             paste::paste! {
                 pyo3::exceptions::[<Py $exception>]::new_err($message)
             }
-        }}
+        }};
     }
     pub use oxy_pyexception as oxy_exception;
 
@@ -39,7 +41,7 @@ mod pyo3_oxide {
                 $module.add_submodule(&submodule)?;
                 submodule
             }
-        }}
+        }};
     }
 
     pub use oxy_pysubmodule as oxy_submodule;
@@ -48,7 +50,7 @@ mod pyo3_oxide {
 #[cfg(feature = "ext-magnus")]
 mod magnus_oxide {
     use magnus::method::Method;
-    use magnus::{Error, Object, RModule};
+    use magnus::{Error, Object, RModule, Ruby};
     use std::marker::PhantomData;
     use std::ops::Deref;
 
@@ -71,6 +73,23 @@ mod magnus_oxide {
     impl OxyModule<'_> {
         pub fn add_function<M: Method>(&self, params: (&str, M)) -> Result<(), Error> {
             self.define_singleton_method(params.0, params.1)
+        }
+    }
+
+    // Unfortunately, it must be named like this for pyo3's #pyfunction macro to work
+    pub struct Python<'a>(&'a Ruby);
+
+    impl<'a> Deref for Python<'a> {
+        type Target = &'a Ruby;
+
+        fn deref(&self) -> &Self::Target {
+            &self.0
+        }
+    }
+
+    impl<'a> From<&'a Ruby> for Python<'a> {
+        fn from(value: &'a Ruby) -> Self {
+            Python(value)
         }
     }
 
@@ -99,7 +118,7 @@ mod magnus_oxide {
             paste::paste! {
                magnus::Error::new(magnus::exception::[<$exception:snake>](), $message)
             }
-        }}
+        }};
     }
     pub use oxy_rbexception as oxy_exception;
 
@@ -110,7 +129,7 @@ mod magnus_oxide {
                 use magnus::Module;
                 oxide::OxyModule::from($module.define_module(stringify!([<$name:camel>]))?)
             }
-        }}
+        }};
     }
 
     pub use oxy_rbsubmodule as oxy_submodule;
