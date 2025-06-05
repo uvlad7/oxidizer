@@ -133,8 +133,7 @@ mod function {
 
             #hash[doc(hidden)]
             pub mod #fn_name {
-                pub const _OXY_NAME: &str = #oxy_name;
-                pub const _OXY_WRAP: unsafe extern "C" fn(#oxy_args magnus::Value) -> magnus::Value = { magnus::function!(super::#fn_name, #oxy_arity) };
+                pub const _OXY_WRAP: Result<(&str, unsafe extern "C" fn(#oxy_args magnus::Value) -> magnus::Value), magnus::Error> = Ok((#oxy_name, { magnus::function!(super::#fn_name, #oxy_arity) }));
             }
         })
     }

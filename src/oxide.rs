@@ -12,10 +12,10 @@ mod pyo3_oxide {
     #[macro_export]
     macro_rules! wrap_oxy_pyfunction {
         ($function:path) => {{
-            pyo3::prelude::wrap_pyfunction!($function)?
+            pyo3::prelude::wrap_pyfunction!($function)
         }};
         ($function:path, $module:expr) => {{
-            pyo3::prelude::wrap_pyfunction!($function, $module)?
+            pyo3::prelude::wrap_pyfunction!($function, $module)
         }};
     }
     pub use wrap_oxy_pyfunction as wrap_oxyfunction;
@@ -87,7 +87,7 @@ mod magnus_oxide {
         }};
         ($function:path, $ignored_module:expr) => {{
             use $function as wrapped_rbfunction;
-            (wrapped_rbfunction::_OXY_NAME, wrapped_rbfunction::_OXY_WRAP)
+            wrapped_rbfunction::_OXY_WRAP
         }};
     }
     pub use wrap_rbfunction as wrap_oxyfunction;
