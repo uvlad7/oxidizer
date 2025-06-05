@@ -119,7 +119,7 @@ mod function {
     use std::str::FromStr;
     use syn::punctuated::Punctuated;
     use syn::token::Comma;
-    use syn::{Error, FnArg, ItemFn, Pat, PatType};
+    use syn::{Error, FnArg, ItemFn, Pat, PatType, ReturnType};
 
     pub fn build_rb_function(name: Option<String>, input: ItemFn) -> Result<TokenStream, Error> {
         let mut fn_name = input.sig.ident.clone();
@@ -157,7 +157,18 @@ mod function {
         let orig_fn_name = fn_name.clone();
         if let Some(py_index_val) = py_index {
             args_len -= 1;
-            let ret_type = input.sig.output.clone();
+            let ret_type_is_res = match input.sig.output {
+                ReturnType::Default => false,
+                ReturnType::Type(_, ref ty) => match ty.as_ref() {
+                    syn::Type::Path(ty_path) => ty_path
+                        .path
+                        .segments
+                        .last()
+                        .map(|seg| seg.ident == "OxyResult")
+                        .unwrap_or(false),
+                    _ => false,
+                },
+            };
             fn_name = proc_macro2::Ident::new(&format!("{}_oxy_wrap", &fn_name), Span::call_site());
             let wrap_args: Punctuated<FnArg, Comma> = Punctuated::from_iter(
                 inputs
@@ -176,17 +187,27 @@ mod function {
                             "argument pattern is not a simple ident",
                         )),
                     },
-                    FnArg::Receiver(_) => Err(Error::new(Span::call_site(), "argument is a receiver")),
+                    FnArg::Receiver(_) => {
+                        Err(Error::new(Span::call_site(), "argument is a receiver"))
+                    }
                 })
                 .collect::<Result<Vec<_>, Error>>()?;
 
             // FIXME: Need to convert here, or call_convert_value trait bounds aren't satisfied
             // TODO: Find how pyo3 does this
+            let call_convert = if ret_type_is_res {
+                quote! { #orig_fn_name(ruby.into(), #(#wrap_arg_names),*).map(|v| magnus::IntoValue::into_value_with(v, ruby)) }
+            } else {
+                quote! { magnus::IntoValue::into_value_with(#orig_fn_name(ruby.into(), #(#wrap_arg_names),*), ruby) }
+            };
+            let wrap_ret_type = if ret_type_is_res {
+                quote! {Result<magnus::Value, magnus::Error>}
+            } else {
+                quote! {magnus::Value}
+            };
             oxy_wrap = quote! {
                 #hash[doc(hidden)]
-                fn #fn_name(ruby: &magnus::Ruby, #wrap_args) -> OxyResult<magnus::Value> {
-                    #orig_fn_name(ruby.into(), #(#wrap_arg_names),*).map(|v| magnus::IntoValue::into_value_with(v, ruby))
-                }
+                fn #fn_name(ruby: &magnus::Ruby, #wrap_args) -> #wrap_ret_type { #call_convert }
             };
         }
         let oxy_arity = TokenStream::from_str(&args_len.to_string())?;
