@@ -18,7 +18,7 @@ module-name = 'oxidizer'
 # pip install -e '.[dev]'
 [project.optional-dependencies]
 dev = [
-    "ipython>=9.2.0", "pytest>=8.3.5", "maturin>=1.8.6",
+    "ipython>=9.2.0", "pytest>=8.3.5", "maturin>=1.8.6", "maturin_import_hook>=0.2.0",
 ]
 
 [tool.pytest.ini_options]
