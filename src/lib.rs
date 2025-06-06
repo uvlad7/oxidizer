@@ -1,7 +1,7 @@
-mod oxide;
+mod oxidizer;
 
-use oxide::{oxy_function, wrap_oxyfunction};
-use oxide::{oxy_init, OxyModule, OxyResult, Python};
+use oxidizer::{oxy_function, wrap_oxyfunction};
+use oxidizer::{oxy_init, OxyModule, OxyResult, Python};
 
 // #![allow(unused)]
 use lazy_static::lazy_static;

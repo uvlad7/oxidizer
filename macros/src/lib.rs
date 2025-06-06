@@ -65,7 +65,7 @@ mod init {
 
             #[magnus::init(name=#crate_name)]
             fn #extern_init_name(ruby: &magnus::Ruby) -> Result<(), magnus::Error> {
-                let module: oxide::OxyModule<'_> = ruby.define_module(#mod_name)?.into();
+                let module: oxidizer::OxyModule<'_> = ruby.define_module(#mod_name)?.into();
                 #init_name(&module)
             }
         })
