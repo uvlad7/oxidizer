@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/oxidizer/version"
+require_relative "lib/tzf/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "oxidizer-rb"
-  spec.version = Oxidizer::VERSION
+  spec.name = "tzfrb"
+  spec.version = Tzf::VERSION
   spec.authors = ["uvlad7"]
   spec.email = ["uvlad7@gmail.com"]
 
@@ -30,7 +30,7 @@ Gem::Specification.new do |spec|
   spec.bindir = "exe"
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
-  spec.extensions = ["ext/oxidizer/extconf.rb"]
+  spec.extensions = ["ext/tzf/extconf.rb"]
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"

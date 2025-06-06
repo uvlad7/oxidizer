@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Oxidizer do
+RSpec.describe Tzf do
   it "has a version number" do
-    expect(Oxidizer::VERSION).not_to be nil
+    expect(Tzf::VERSION).not_to be nil
   end
 
   it "gets tz" do

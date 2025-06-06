@@ -91,18 +91,18 @@ ipython
 
 The rest of the ReadMe is a template.
 
-[![Gem Version](https://badge.fury.io/rb/oxidizer-rb.svg)](https://badge.fury.io/rb/oxidizer-rb)
-![Gem](https://img.shields.io/gem/dt/oxidizer-rb?style=plastic)
-![Gem](https://img.shields.io/gem/dtv/oxidizer-rb?style=plastic)
-[![Tests](https://github.com/uvlad7/oxidizer-rb/actions/workflows/main.yml/badge.svg)](https://github.com/uvlad7/oxidizer-rb/actions/workflows/main.yml)
-[![Docs](https://github.com/uvlad7/oxidizer-rb/actions/workflows/docs.yml/badge.svg)](https://github.com/uvlad7/oxidizer-rb/actions/workflows/docs.yml)
-[![Release](https://github.com/uvlad7/oxidizer-rb/actions/workflows/release.yml/badge.svg)](https://github.com/uvlad7/oxidizer-rb/actions/workflows/release.yml)
+[![Gem Version](https://badge.fury.io/rb/tzfrb.svg)](https://badge.fury.io/rb/tzfrb)
+![Gem](https://img.shields.io/gem/dt/tzfrb?style=plastic)
+![Gem](https://img.shields.io/gem/dtv/tzfrb?style=plastic)
+[![Tests](https://github.com/uvlad7/tzfrb/actions/workflows/main.yml/badge.svg)](https://github.com/uvlad7/tzfrb/actions/workflows/main.yml)
+[![Docs](https://github.com/uvlad7/tzfrb/actions/workflows/docs.yml/badge.svg)](https://github.com/uvlad7/tzfrb/actions/workflows/docs.yml)
+[![Release](https://github.com/uvlad7/tzfrb/actions/workflows/release.yml/badge.svg)](https://github.com/uvlad7/tzfrb/actions/workflows/release.yml)
 
-# Oxidizer
+# Tzf
 
 TODO: Delete this and the text below, and describe your gem
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/oxidizer`. To experiment with that code, run `bin/console` for an interactive prompt.
+Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/tzf`. To experiment with that code, run `bin/console` for an interactive prompt.
 
 ## Installation
 
@@ -132,7 +132,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/oxidizer.
+Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/tzfrb.
 
 ## License
 

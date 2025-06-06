@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    oxidizer-rb (0.1.0)
+    tzfrb (0.1.0)
       rb_sys (~> 0.9.91)
 
 GEM
@@ -99,7 +99,6 @@ PLATFORMS
 DEPENDENCIES
   base64
   irb
-  oxidizer-rb!
   pry
   pry-byebug
   rake (~> 13.0)
@@ -107,6 +106,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop (~> 1.21)
   toml-rb
+  tzfrb!
   yard
 
 BUNDLED WITH

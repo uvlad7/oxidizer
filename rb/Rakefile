@@ -16,10 +16,10 @@ require "rb_sys/extensiontask"
 task build: :compile
 task spec: :compile
 
-gemspec = Gem::Specification.load("oxidizer.gemspec")
+gemspec = Gem::Specification.load("tzfrb.gemspec")
 
-RbSys::ExtensionTask.new("oxidizer", gemspec) do |ext|
-  ext.lib_dir = "lib/oxidizer"
+RbSys::ExtensionTask.new("tzf", gemspec) do |ext|
+  ext.lib_dir = "lib/tzf"
   ext.cross_compile = true
 end
 
