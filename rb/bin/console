@@ -1,6 +1,16 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+module AnnoyingGemWarningSilencer
+    def contains_requirable_file?(file)
+        return super unless source.is_a?(Bundler::Source::Gemspec)
+        return false if ignored?
+
+        super
+    end
+end
+
+Gem::BasicSpecification.prepend(AnnoyingGemWarningSilencer)
 require "bundler/setup"
 require "tzf"
 
