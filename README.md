@@ -34,6 +34,7 @@ ipython
 
 ### Example of `tzfpy` migration
 
+![](./migration.png)
 ```diff
 -use pyo3::prelude::*;
 +use oxide::{oxy_function, wrap_oxyfunction};
@@ -94,9 +95,10 @@ The rest of the ReadMe is a template.
 [![Gem Version](https://badge.fury.io/rb/tzfrb.svg)](https://badge.fury.io/rb/tzfrb)
 ![Gem](https://img.shields.io/gem/dt/tzfrb?style=plastic)
 ![Gem](https://img.shields.io/gem/dtv/tzfrb?style=plastic)
-[![Tests](https://github.com/uvlad7/tzfrb/actions/workflows/main.yml/badge.svg)](https://github.com/uvlad7/tzfrb/actions/workflows/main.yml)
-[![Docs](https://github.com/uvlad7/tzfrb/actions/workflows/docs.yml/badge.svg)](https://github.com/uvlad7/tzfrb/actions/workflows/docs.yml)
-[![Release](https://github.com/uvlad7/tzfrb/actions/workflows/release.yml/badge.svg)](https://github.com/uvlad7/tzfrb/actions/workflows/release.yml)
+[![Tests](https://github.com/uvlad7/oxidizer/actions/workflows/main.yml/badge.svg)](https://github.com/uvlad7/oxidizer/actions/workflows/main.yml)
+[![Docs](https://github.com/uvlad7/oxidizer/actions/workflows/docs.yml/badge.svg)](https://github.com/uvlad7/oxidizer/actions/workflows/docs.yml)
+[![Release](https://github.com/uvlad7/oxidizer/actions/workflows/release.yml/badge.svg)](https://github.com/uvlad7/oxidizer/actions/workflows/release.yml)
+[![CI](https://github.com/uvlad7/oxidizer/actions/workflows/CI.yml/badge.svg)](https://github.com/uvlad7/oxidizer/actions/workflows/CI.yml)
 
 # Tzf
 
