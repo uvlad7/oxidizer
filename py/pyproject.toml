@@ -3,7 +3,7 @@ requires = ["maturin>=1.8,<2.0"]
 build-backend = "maturin"
 
 [project]
-name = "oxidizer-py"
+name = "tzfpy"
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Rust",
@@ -13,7 +13,7 @@ classifiers = [
 dynamic = ["version"]
 [tool.maturin]
 features = ["pyo3/extension-module", "ext-pyo3"]
-module-name = 'oxidizer'
+module-name = 'tzf'
 
 # pip install -e '.[dev]'
 [project.optional-dependencies]
