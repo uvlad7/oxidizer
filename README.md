@@ -1,39 +1,12 @@
 # Template project
 
 This is a template project that allows to create both a Ruby gem and a Python library implemented in Rust.
-For the Ruby part, Bundler was used to initialize the project:
-```bash
-bundle gem oxidizer-rb --ext=rust --mit --test=rspec --ci=github --linter=rubocop
-```
-For the Python part, Maturin was used:
-```bash
-python -m venv env
-pip install maturin
-maturin init --name oxidizer-py --bindings pyo3
-```
+It provides convenient wrappers around [magnus](https://github.com/matsadler/magnus) and [pyo3](https://github.com/PyO3/pyo3), along with build configs,
+to let you reuse the same code for both targets.
 
-Mise is used to manage tool versions. If you don’t have it installed,
-you can manually install the tools specified in these files: 
-- [`mise.toml`](./mise.toml)
-- [`rb/mise.toml`](./rb/mise.toml)
-- [`py/mise.toml`](./py/mise.toml)
+**This is just a prototype implementation so far, with support for only the most basic use-cases - see to the example below.**
 
-##### Ruby Gem
-To test the Ruby gem, navigate to the `rb` directory and run:
-```shell
-bin/setup
-bin/console
-```
-
-##### Python Library
-For the Python library, go to the `py` directory and execute:
-```shell
-pip install -e '.[dev]'
-ipython
-```
-
-### Example of `tzfpy` migration
-
+### Example of [`tzfpy`](https://github.com/ringsaturn/tzfpy) migration
 ![](./migration.png)
 ```diff
 -use pyo3::prelude::*;
@@ -88,6 +61,38 @@ ipython
 +    m.add_function(wrap_oxyfunction!(data_version, m)?)?;
      Ok(())
  }
+```
+
+### Development
+For the Ruby part, Bundler was used to initialize the project:
+```bash
+bundle gem oxidizer-rb --ext=rust --mit --test=rspec --ci=github --linter=rubocop
+```
+For the Python part, Maturin was used:
+```bash
+python -m venv env
+pip install maturin
+maturin init --name oxidizer-py --bindings pyo3
+```
+
+Mise is used to manage tool versions. If you don’t have it installed,
+you can manually install the tools specified in these files:
+- [`mise.toml`](./mise.toml)
+- [`rb/mise.toml`](./rb/mise.toml)
+- [`py/mise.toml`](./py/mise.toml)
+
+##### Ruby Gem
+To test the Ruby gem, navigate to the `rb` directory and run:
+```shell
+bin/setup
+bin/console
+```
+
+##### Python Library
+For the Python library, go to the `py` directory and execute:
+```shell
+pip install -e '.[dev]'
+ipython
 ```
 
 The rest of the ReadMe is a template.
