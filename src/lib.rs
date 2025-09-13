@@ -1,10 +1,11 @@
 mod oxidizer;
 
-use oxidizer::{oxy_function, wrap_oxyfunction};
+use oxidizer::{oxy_class, oxy_function, wrap_oxyfunction};
 use oxidizer::{oxy_init, OxyModule, OxyResult, Python};
 
 // #![allow(unused)]
 use lazy_static::lazy_static;
+use magnus::Module;
 use tzf_rs::DefaultFinder;
 
 lazy_static! {
@@ -31,11 +32,26 @@ pub fn data_version(_py: Python) -> OxyResult<String> {
     return Ok(FINDER.data_version().to_string());
 }
 
+#[oxy_class(class = "Tzf::Point")]
+struct Point {
+    x: isize,
+    y: isize,
+}
+
+impl Point {
+    fn inspect(&self) -> String {
+        format!("Point{{x = {}, y = {}}}", self.x, self.y)
+    }
+}
+
 #[oxy_init]
 fn tzfpy(m: &OxyModule) -> OxyResult<()> {
     m.add_function(wrap_oxyfunction!(get_tz, m)?)?;
     m.add_function(wrap_oxyfunction!(get_tzs, m)?)?;
     m.add_function(wrap_oxyfunction!(timezonenames, m)?)?;
     m.add_function(wrap_oxyfunction!(data_version, m)?)?;
+    // m.add_class::<Point>()?;
+    let c = m.define_class("Point", magnus::Ruby::get().unwrap().class_object())?;
+    c.define_method("inspect", magnus::method!(Point::inspect, 0))?;
     Ok(())
 }

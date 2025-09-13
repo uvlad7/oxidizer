@@ -24,6 +24,8 @@ mod pyo3_oxide {
     }
     pub use wrap_oxy_pyfunction as wrap_oxyfunction;
 
+    pub use pyo3::prelude::pyclass as oxy_class;
+
     // TODO: Create mappings for types, not just `paste`
     #[macro_export]
     macro_rules! oxy_pyexception {
@@ -112,6 +114,8 @@ mod magnus_oxide {
         }};
     }
     pub use wrap_rbfunction as wrap_oxyfunction;
+
+    pub use magnus::wrap as oxy_class;
 
     // TODO: Create mappings for functions, not just `paste` with case convention
     #[macro_export]
